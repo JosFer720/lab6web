@@ -1,4 +1,3 @@
-# lab6web
 ## Endpoints
 - **GET** `/api/matches` Recupera la lista de todos los partidos almacenados en la base de datos.
 - **GET** `/api/matches/:id` Obtiene los detalles de un partido específico a través de su ID.
