@@ -1,0 +1,98 @@
+{
+    "name": "lab6-api Full Collection",
+    "folders": [
+        {
+        "name": "Operaciones Básicas",
+        "requests": [
+            {
+                "name": "[GET] Listar partidos",
+                "method": "GET",
+                "url": "{{base_url}}/matches"
+            },
+            {
+                "name": "[GET] Obtener partido",
+                "method": "GET",
+                "url": "{{base_url}}/matches/1"
+            },
+            {
+                "name": "[POST] Crear partido",
+                "method": "POST",
+                "url": "{{base_url}}/matches",
+                "body": {
+                    "mode": "json",
+                    "json": {
+                        "homeTeam": "Equipo Local",
+                        "awayTeam": "Equipo Visitante",
+                        "matchDate": "2024-01-01"
+                    }
+                }
+            },
+            {
+                "name": "[PUT] Actualizar partido",
+                "method": "PUT",
+                "url": "{{base_url}}/matches/1",
+                "body": {
+                    "mode": "json",
+                    "json": {
+                        "homeTeam": "Equipo Actualizado",
+                        "awayTeam": "Visitante Actualizado",
+                        "matchDate": "2024-01-02"
+                    }
+                }
+            },
+            {
+                "name": "[DELETE] Eliminar partido",
+                "method": "DELETE",
+                "url": "{{base_url}}/matches/1"
+            }
+        ]
+    },
+    {
+        "name": "Operaciones PATCH",
+        "requests": [
+            {
+                "name": "[PATCH] Actualizar goles",
+                "method": "PATCH",
+                "url": "{{base_url}}/matches/1",
+                "body": {
+                    "mode": "json",
+                    "json": {
+                        "homeGoals": 2,
+                        "awayGoals": 1
+                    }
+                }
+            },
+            {
+                "name": "[PATCH] Añadir tarjetas",
+                "method": "PATCH",
+                "url": "{{base_url}}/matches/1",
+                "body": {
+                    "mode": "json",
+                    "json": {
+                        "yellowCards": 1,
+                        "redCards": 0
+                    }
+                }
+            },
+            {
+                "name": "[PATCH] Establecer tiempo extra",
+                "method": "PATCH",
+                "url": "{{base_url}}/matches/1",
+                "body": {
+                    "mode": "json",
+                    "json": {
+                        "extraTime": 5
+                    }
+                }
+            }
+        ]
+    }
+],
+
+"variables": [
+    {
+        "name": "base_url",
+        "value": "http://localhost:8080/api"
+        }
+    ]
+}

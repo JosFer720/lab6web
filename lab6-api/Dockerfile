@@ -1,20 +1,28 @@
-# Dockerfile para lab6-api con SQLite persistente (Alpine + CGO)
 # ========= ETAPA DE CONSTRUCCIÓN =========
-FROM golang:1.24-alpine AS builder
+FROM golang:1.24.1-alpine AS builder
 
-# Instalar dependencias de compilación C para SQLite
-RUN apk add --no-cache gcc musl-dev
+# Instalar dependencias de compilación y herramientas para Swagger
+RUN apk add --no-cache \
+    gcc \
+    musl-dev \
+    git
+
+# Instalar swag CLI para documentación
+RUN go install github.com/swaggo/swag/cmd/swag@latest
 
 WORKDIR /app
 
-# 1. Copiar dependencias primero para mejor caché
+# Copiar módulos primero para mejor caché
 COPY go.mod go.sum ./
 RUN go mod download
 
-# 2. Copiar todo el código fuente
+# Copiar todo el código fuente
 COPY . .
 
-# 3. Construir la aplicación con soporte CGO
+# Generar documentación Swagger
+RUN /go/bin/swag init -g main.go --output docs --parseDependency --parseInternal
+
+# Construir la aplicación con soporte CGO
 RUN CGO_ENABLED=1 GOOS=linux go build -ldflags="-s -w" -o /lab6-api
 
 # ========= ETAPA DE EJECUCIÓN =========
@@ -22,26 +30,35 @@ FROM alpine:3.18
 
 WORKDIR /app
 
-# 1. Instalar SQLite y crear directorio para datos
+# Instalar dependencias de runtime
 RUN apk add --no-cache \
     sqlite \
-    ca-certificates && \
+    ca-certificates \
+    tzdata && \
     mkdir -p /data && \
-    chmod 777 /data
+    chown nobody:nobody /data
 
-# 2. Copiar artefactos desde builder
+# Copiar artefactos desde builder
 COPY --from=builder /lab6-api /app/
+COPY --from=builder /app/docs /app/docs/
 COPY --from=builder /app/LaLigaTracker.html /app/
 
-# 3. Configurar variables de entorno
+# Configurar variables de entorno
 ENV DB_PATH=/data/lab6.db \
-    GIN_MODE=release
+    GIN_MODE=release \
+    TZ=UTC
 
-# 4. Volumen para persistencia
+# Configurar permisos
+RUN chown -R nobody:nobody /app
+
+# Volumen para persistencia
 VOLUME /data
 
-# 5. Puerto expuesto
+# Puerto expuesto
 EXPOSE 8080
 
-# 6. Comando de inicio
+# Usuario no privilegiado
+USER nobody
+
+# Comando de inicio
 CMD ["/app/lab6-api"]

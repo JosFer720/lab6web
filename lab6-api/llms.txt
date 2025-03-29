@@ -1,0 +1,25 @@
+API de Gestión de Partidos
+
+Endpoints:
+
+1. GET /api/matches - Lista todos los partidos
+2. GET /api/matches/{id} - Obtiene un partido específico
+3. POST /api/matches - Crea un nuevo partido
+4. PUT /api/matches/{id} - Actualiza un partido existente
+5. DELETE /api/matches/{id} - Elimina un partido
+
+Endpoints de estadísticas (PATCH):
+6. PATCH /api/matches/{id}/goals - Actualiza los goles
+   Parámetros opcionales: homeGoals, awayGoals
+7. PATCH /api/matches/{id}/yellowcards - Registra tarjeta amarilla
+   Parámetro opcional: count (default: 1)
+8. PATCH /api/matches/{id}/redcards - Registra tarjeta roja
+   Parámetro opcional: count (default: 1)
+9. PATCH /api/matches/{id}/extratime - Establece tiempo extra
+   Parámetro opcional: minutes (default: 2)
+
+Documentación Swagger:
+http://localhost:8080/swagger/index.html#/
+
+Ejemplo de uso con curl:
+- Listar partidos: curl http://localhost:8080/api/matches
